@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Comprovante de Teste</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2b2b2b;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #00d285;
+            color: #121212;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #00b370;
+        }
+        #btnDownload {
+            background-color: #4a90e2;
+            color: white;
+            display: none; /* Escondido até gerar a imagem */
+        }
+        /* Borda ao redor do "papel" para visualização */
+        canvas {
+            border: 1px solid #555;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Fábrica de Comprovantes Fictícios</h2>
+    <p>Gere uma imagem de comprovante com um E2E ID válido para testar sua ferramenta de OCR.</p>
+
+    <div class="controls">
+        <button onclick="gerarComprovante()">Gerar Novo Comprovante</button>
+        <button id="btnDownload" onclick="baixarImagem()">Baixar Imagem (.png)</button>
+    </div>
+
+    <canvas id="comprovanteCanvas" width="400" height="500"></canvas>
+
+    <script>
+        let idGeradoStr = ""; // Vai guardar o ID para o nome do arquivo
+
+        function gerarComprovante() {
+            const canvas = document.getElementById("comprovanteCanvas");
+            const ctx = canvas.getContext("2d");
+
+            // 1. Pinta o fundo de branco (papel)
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Desenha um cabeçalho verde
+            ctx.fillStyle = "#00d285";
+            ctx.fillRect(0, 0, canvas.width, 80);
+
+            // 3. Adiciona o Título
+            ctx.fillStyle = "#121212";
+            ctx.font = "bold 24px Arial";
+            ctx.fillText("Comprovante de Pix", 20, 50);
+
+            // 4. Criação do E2E ID Válido (para passar na sua Regex)
+            // Lógica: 'E' + 8 números (banco) + 12 números (data) + 11 aleatórios
+            const banco = "12345678";
+            
+            // Pega a data/hora atual no formato YYYYMMDDHHMM
+            const agora = new Date();
+            const dataStr = agora.getFullYear().toString() + 
+                            String(agora.getMonth() + 1).padStart(2, '0') + 
+                            String(agora.getDate()).padStart(2, '0') + 
+                            String(agora.getHours()).padStart(2, '0') + 
+                            String(agora.getMinutes()).padStart(2, '0');
+            
+            const aleatorio = Math.random().toString(36).substring(2, 13).toUpperCase().padStart(11, 'A');
+            
+            idGeradoStr = `E${banco}${dataStr}${aleatorio}`;
+
+            // 5. Escreve os dados do comprovante no "papel"
+            ctx.fillStyle = "#333333";
+            ctx.font = "18px Arial";
+            
+            ctx.fillText("Valor da Transferência:", 20, 130);
+            ctx.font = "bold 28px Arial";
+            ctx.fillText("R$ 100,00", 20, 165);
+
+            ctx.font = "16px Arial";
+            ctx.fillText("Destinatário: João Victor", 20, 220);
+            ctx.fillText("CPF: ***.123.456-**", 20, 250);
+            ctx.fillText("Data: " + agora.toLocaleDateString() + " às " + agora.toLocaleTimeString(), 20, 280);
+
+            // Linha divisória
+            ctx.beginPath();
+            ctx.moveTo(20, 320);
+            ctx.lineTo(380, 320);
+            ctx.strokeStyle = "#cccccc";
+            ctx.stroke();
+
+            // 6. Escreve o E2E ID (em destaque para o Tesseract conseguir ler bem)
+            ctx.fillStyle = "#777777";
+            ctx.font = "14px Arial";
+            ctx.fillText("ID DA TRANSAÇÃO:", 20, 360);
+
+            ctx.fillStyle = "#121212";
+            ctx.font = "bold 16px monospace"; // Fonte monoespaçada ajuda o OCR
+            ctx.fillText(idGeradoStr, 20, 390);
+
+            // Mostra o botão de download
+            document.getElementById("btnDownload").style.display = "block";
+        }
+
+        // Função para transformar o Canvas em arquivo PNG e baixar
+        function baixarImagem() {
+            const canvas = document.getElementById("comprovanteCanvas");
+            const link = document.createElement('a');
+            link.download = `comprovante_teste_${idGeradoStr.substring(0,8)}.png`; // Nome do arquivo
+            link.href = canvas.toDataURL('image/png'); // Converte para imagem
+            link.click(); // Força o clique para iniciar o download
+        }
+
+        // Já gera um automaticamente ao abrir a página
+        window.onload = gerarComprovante;
+    </script>
+</body>
+</html>

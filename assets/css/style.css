@@ -1,0 +1,174 @@
+/* Configurações gerais */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212; /* Fundo escuro */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Cartão central */
+.container {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 210, 133, 0.15); /* Sombra levemente esverdeada */
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Estilo do campo de digitação */
+input {
+    width: 90%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: 1px; /* Espaça as letras para parecer um código */
+}
+
+/* Estilo do botão */
+button {
+    background-color: #00d285; /* Verde Pix */
+    color: #121212;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #00b370; /* Verde mais escuro ao passar o mouse */
+}
+
+/* Estilo da caixa de resultado (escondida inicialmente) */
+#resultado {
+    margin-top: 20px;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 6px;
+    display: none; 
+}
+
+/* Classes dinâmicas que o JS vai injetar */
+.valido { 
+    background-color: rgba(0, 210, 133, 0.1); 
+    color: #00d285; 
+    border: 1px solid #00d285;
+}
+.invalido { 
+    background-color: rgba(255, 76, 76, 0.1); 
+    color: #ff4c4c; 
+    border: 1px solid #ff4c4c;
+}
+
+/* Estilo da área de upload */
+.upload-area {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.btn-upload {
+    display: block;
+    background-color: #2a2a2a;
+    color: #00d285;
+    border: 1px dashed #00d285;
+    padding: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-upload:hover {
+    background-color: #00d285;
+    color: #121212;
+}
+
+/* Estado de "carregando" enquanto a IA lê a foto */
+.carregando {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+/* =========================================
+   ANIMAÇÃO DE VALIDAÇÃO (Canto da tela)
+   ========================================= */
+
+#animacao-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 100px;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    display: none; /* Fica escondido até o usuário validar */
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Estado inicial do personagem */
+#anim-pessoa {
+    font-size: 45px;
+    position: absolute;
+    left: 10px; /* Começa longe da porta */
+    transition: left 1s linear; /* Demora 1 segundo para andar */
+}
+
+/* Estado inicial da porta */
+#anim-porta {
+    font-size: 55px;
+    position: absolute;
+    right: 20px;
+    transition: transform 0.4s ease;
+    transform-origin: right; /* Eixo de giro para simular abertura */
+}
+
+/* CLASSES DE AÇÃO (Injetadas pelo JavaScript) */
+
+/* 1. A pessoa caminhando até a porta */
+.walk-to-door {
+    left: 110px !important; 
+}
+
+/* 2. Sucesso: A porta abre (rotaciona em 3D) */
+.door-open {
+    transform: perspective(200px) rotateY(80deg); 
+}
+
+/* 2. Sucesso: A pessoa atravessa e some */
+.walk-through {
+    left: 180px !important;
+    opacity: 0;
+    transition: left 0.5s linear, opacity 0.5s ease !important;
+}
+
+/* 3. Erro: Pessoa recua (volta uma casa) e bate a cabeça */
+.bump-door {
+    left: 60px !important; /* Faz o personagem recuar para trás da porta */
+    animation: baterEVoltar 0.5s ease;
+}
+
+/* Nova animação: ele dá o tranco na porta e volta tremendo */
+@keyframes baterEVoltar {
+    0%   { transform: translateX(50px); } /* O impacto na porta */
+    20%  { transform: translateX(0) rotate(-15deg); }
+    40%  { transform: translateX(-10px) rotate(15deg); }
+    60%  { transform: translateX(10px) rotate(-10deg); }
+    80%  { transform: translateX(-5px) rotate(5deg); }
+    100% { transform: translateX(0) rotate(0); }
+}

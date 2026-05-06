@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de Autenticidade Pix</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Validador de E2E ID (Pix)</h2>
+        <p>Insira o código manualmente ou faça o upload de um comprovante para leitura automática.</p>
+        
+        <div class="upload-area">
+            <label for="uploadComprovante" class="btn-upload">📷 Ler Comprovante (Imagem)</label>
+            <input type="file" id="uploadComprovante" accept="image/*" onchange="lerComprovante(event)" style="display: none;">
+        </div>
+
+        <p style="font-size: 12px; color: #888;">OU DIGITE O CÓDIGO ABAIXO:</p>
+
+        <input type="text" id="pixIdInput" placeholder="Ex: E12345678202305151030ABC12345678" maxlength="32">
+        
+        <button onclick="validarPix()">Verificar Autenticidade</button>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <div id="animacao-container">
+        <div id="anim-pessoa">🚶</div>
+        <div id="anim-porta">🚪</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
